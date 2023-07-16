@@ -6,7 +6,7 @@ on:
     - cron: '5 */5 * * *'
 
 jobs:
-  run_puppeteer:
+  run_playwright:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,17 +17,14 @@ jobs:
         with:
           python-version: '3.x'
       
-      - name: Cache Chromium
-        uses: actions/cache@v2
-        with:
-          path: /home/runner/.local/share/pyppeteer
-          key: chromium
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyppeteer
+          pip install playwright
       
+      - name: Download browser binaries
+        run: python -m playwright install
+
       - name: Run Python script
         run: |
           python login.py
