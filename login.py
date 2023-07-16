@@ -1,5 +1,7 @@
 import asyncio
+import random
 from pyppeteer import launch
+from pyppeteer_stealth import stealth
 
 users = [
     {'username': '13438186526', 'password': '19821124'},
@@ -69,7 +71,8 @@ async def login(username, password, browser):
 
 async def main():
     try:
-        browser = await launch(headless=True)
+        browser = await launch(headless=False)
+        await stealth(browser)
 
         tasks = []
         for user in users:
@@ -92,8 +95,7 @@ async def main():
             await browser._process.kill()
 
 def delay_time():
-    import random
-    return random.randint(1000, 6000) / 1000
+    return random.uniform(1, 6)
 
 if __name__ == "__main__":
     asyncio.run(main())
