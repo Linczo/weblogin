@@ -72,7 +72,7 @@ async def login(username, password, browser):
 async def main():
     browser = None  # Initialize browser variable with None
     try:
-        browser = await launch(headless=False)
+        browser = await launch(headless=True)  # Set headless=True for running in headless mode
         await stealth(browser)
 
         tasks = []
