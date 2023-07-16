@@ -8,6 +8,9 @@ on:
 jobs:
   run_puppeteer:
     runs-on: ubuntu-latest
+    container:
+      image: pptr/ubuntu-18.04
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
