@@ -92,8 +92,6 @@ async def main():
         if browser is not None:
             await browser.close()
             await asyncio.sleep(3)  # Add a small delay
-            await browser._cleanup()
-            await browser._process.kill()
 
 def delay_time():
     return random.uniform(1, 6)
