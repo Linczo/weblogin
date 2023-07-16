@@ -2,6 +2,7 @@ import asyncio
 import random
 from pyppeteer import launch
 from pyppeteer_stealth import stealth
+from pyppeteer.errors import NetworkError
 
 users = [
     {'username': '13438186526', 'password': '19821124'},
@@ -29,42 +30,45 @@ async def login(username, password, browser):
             # Submit login form
             await page.click('.content_button button')
 
-            # Wait for successful login
-            await page.waitForNavigation()
-
-            # Check if login was successful
-            if 'User/index.html' in page.url:
-                print(f'Successful login for user: {username}')
-
-                # Go to user center page
-                await page.goto('http://wwww.cq17.com:12345/index/User/index.html')
-
-                # Wait for page to load
-                await page.waitForSelector('.signinqd')
-
-                # Click on red envelope to claim
-                await page.click('.signinqd')
-
-                # Perform other operations after claiming the red envelope...
-
-                print(f'Claimed red envelope for user: {username}')
-
-                # Click on safe logout
-                await page.click('.quit a')
-
-                # Wait for logout to complete
-                await page.waitForNavigation()
-
-                print(f'Logged out for user: {username}')
-
-                success = True
-            else:
-                # Retry if login failed
+            try:
+                # Wait for successful login and check if login was successful
+                await page.waitForNavigation(timeout=5000)
+                await page.waitForFunction('document.querySelector(".content_button button") === null')
+            except NetworkError:
+                # Timeout occurred or element not found, retry login
                 retry_count += 1
                 await page.close()
+                continue
+
+            print(f'Successful login for user: {username}')
+
+            # Go to user center page
+            await page.goto('http://wwww.cq17.com:12345/index/User/index.html')
+
+            # Wait for page to load
+            await page.waitForSelector('.signinqd')
+
+            # Click on red envelope to claim
+            await page.click('.signinqd')
+
+            # Perform other operations after claiming the red envelope...
+
+            print(f'Claimed red envelope for user: {username}')
+
+            # Click on safe logout
+            await page.click('.quit a')
+
+            # Wait for logout to complete
+            await page.waitForNavigation()
+
+            print(f'Logged out for user: {username}')
+
+            success = True
         except Exception as e:
             print(f"An error occurred during login for user {username}: {str(e)}")
             retry_count += 1
+
+        await page.close()
 
     # Random delay
     await asyncio.sleep(delay_time())
