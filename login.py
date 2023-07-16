@@ -68,22 +68,28 @@ async def login(username, password, browser):
     await asyncio.sleep(delay_time())
 
 async def main():
-    browser = await launch(headless=True)
+    try:
+        browser = await launch(headless=True)
 
-    tasks = []
-    for user in users:
-        username = user['username']
-        password = user['password']
-        task = asyncio.create_task(login(username, password, browser))
-        tasks.append(task)
+        tasks = []
+        for user in users:
+            username = user['username']
+            password = user['password']
+            task = asyncio.create_task(login(username, password, browser))
+            tasks.append(task)
 
-    await asyncio.gather(*tasks)
+        await asyncio.gather(*tasks)
 
-    # Close the browser
-    await browser.close()
-    await asyncio.sleep(3)  # Add a small delay
-    await browser._cleanup()
-    await browser._process.kill()
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+    finally:
+        # Close the browser
+        if browser:
+            await browser.close()
+            await asyncio.sleep(3)  # Add a small delay
+            await browser._cleanup()
+            await browser._process.kill()
 
 def delay_time():
     import random
