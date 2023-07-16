@@ -9,7 +9,7 @@ jobs:
   run_puppeteer:
     runs-on: ubuntu-latest
     container:
-      image: pptr/ubuntu-18.04
+      image: pptr/daemon
       
     steps:
       - name: Checkout code
