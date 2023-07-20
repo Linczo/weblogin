@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer');
 // 定义用户和密码列表
 const users = [
   { username: '13438186526', password: '19821124' },
+  { username: '13678154062', password: '19821124' },
   { username: '15928968862', password: '19821124' }
 ];
 
